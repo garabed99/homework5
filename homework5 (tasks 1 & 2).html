@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Task 1&2</title>
+	</head>
+	<body>
+	<canvas id="task1&2" width="400" height="400"></canvas>
+<script>
+	 const canvas = document.getElementById("task1&2");
+     const context = canvas.getContext("2d");
+     const rand = function(num) {
+        return Math.floor(Math.random() * num) + 1;
+      };
+      const colorArray = ["red", "blue", "orange", "black"];
+      const createBoxes = function(count, canvasWidth, canvasHeight){
+        const boxes = [];
+        const array = function(num){
+          if (num < 1) {
+              return "";
+          };
+          boxes.push({
+            x: rand(canvasWidth - 40),
+            y: rand(canvasHeight - 40),
+            width: 40,
+            height: 40,
+            yDelta: 2,
+            xDelta: 2,
+            color: colorArray[rand(5)-1]
+          });
+          array(num - 1);
+        };
+        
+        array(count);
+        return boxes;
+      };
+      const collision = createBoxes(20, canvas.width, canvas.height);
+      
+      const forEach = function(arr, f) {
+        const helper = function(n) {
+          if(n === arr.length)
+            return;
+          f(arr[n]);
+          helper(n + 1);
+        };
+        helper(0);
+      };
+      const draw = function(){
+      	context.clearRect(0, 0, canvas.width, canvas.height);
+        const drawRect = function(num){
+          context.fillStyle = num.color;
+          context.fillRect(num.x, num.y, num.width, num.height);
+        }
+        forEach(collision, drawRect);
+      }
+      const updateData = function(){
+        const help = function(point){
+          if (point.x + point.width >= canvas.width || point.x <= 0) {
+            point.xDelta = -point.xDelta;
+            point.color = colorArray[rand(5) - 1]
+          }
+          if (point.y + point.height >= canvas.height || point.y <= 0) {
+            point.yDelta = -point.yDelta;
+            point.color = colorArray[rand(5) - 1]
+          }
+          point.x = point.x + point.xDelta;
+          point.y = point.y + point.yDelta;
+        }
+        
+        forEach(collision, help);
+      }
+      
+      const loop = function(){
+        draw();
+        updateData();
+        
+        requestAnimationFrame(loop);
+      }
+      
+      loop();
+        </script>
+    </body>
+</html>
